@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="LinFusion is a distilled diffusion model with linear complexity with respect to the number of pixels. It is a plug-and-play component for existing architectures like SD series.">
+  <meta name="keywords" content="LinFusion, Mamba, Linear Attention, Distilled Diffusion Model, Ultra-High-Resolution Image Synthesis">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LinFusion: 1 GPU, 1 Minute, 16K Image</title>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYVRSFMDRL');
+  </script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/favicon.svg">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+</head>
+<body>
+
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+  <div class="navbar-menu">
+    <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
+      <a class="navbar-item" href="http://121.37.94.87/">
+      <span class="icon">
+          <i class="fas fa-home"></i>
+      </span>
+      </a>
+    </div>
+  </div>
+</nav>
+
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">LinFusion: 1 GPU, 1 Minute, 16K Image</h1>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">
+              <a href="http://121.37.94.87/">Songhua Liu</a>,</span>
+            <span class="author-block">
+              <a href="https://whyu.me/">Weihao Yu</a>,</span>
+            <span class="author-block">
+              <a href="https://scholar.google.com/citations?user=HP9Be6UAAAAJ&hl=en">Zhenxiong Tan</a>,
+            </span>
+            <span class="author-block">
+              <a href="https://sites.google.com/site/sitexinchaowang/">Xinchao Wang</a>
+            </span>
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block"><a href="http://lv-nus.org/">Learning and Vision Lab</a>, National University of Singapore</span>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- PDF Link. -->
+              <span class="link-block">
+                <a href="https://arxiv.org/pdf/2409.xxxxx"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="https://arxiv.org/abs/2409.xxxxx"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+              <!-- Code Link. -->
+              <span class="link-block">
+                <a href="https://github.com/Huage001/LinFusion"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code</span>
+                  </a>
+              </span>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <!-- <video id="teaser" autoplay muted loop playsinline height="100%">
+        <source src="./static/videos/teaser.mp4"
+                type="video/mp4">
+      </video> -->
+      <img src="./static/images/teaser.jpg"/>
+      <h2 class="subtitle has-text-centered">
+        A 16384x8192-resolution example in the theme of <i>Black Myth: Wukong</i> generated by <span class="dnerf">LinFusion</span>.
+      </h2>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            Modern diffusion models, particularly those utilizing a Transformer-based UNet for denoising, rely heavily on self-attention operations to manage complex spatial relationships, thus achieving impressive generation performance. 
+However, this existing paradigm faces significant challenges in generating high-resolution visual content due to its quadratic time and memory complexity with respect to the number of spatial tokens. 
+To address this limitation, we aim at a novel linear attention mechanism as an alternative in this paper. 
+Specifically, we begin our exploration from recently introduced models with linear complexity, \textit{e.g.}, Mamba, Mamba2, and Gated Linear Attention, and identify two key features—attention normalization and non-causal inference—that enhance high-resolution visual generation performance. 
+Building on these insights, we introduce a generalized linear attention paradigm, which serves as a low-rank approximation of a wide spectrum of popular linear token mixers. 
+To save the training cost and better leverage pre-trained models, we initialize our models and distill the knowledge from pre-trained StableDiffusion (SD). 
+We find that the distilled model, termed LinFusion, achieves performance on par with or superior to the original SD after only modest training, while significantly reducing time and memory complexity. 
+Extensive experiments on SD-v1.5, SD-v2.1, and SD-XL demonstrate that LinFusion delivers satisfactory zero-shot cross-resolution generation performance, generating high-resolution images like 16K resolution. 
+Moreover, it is highly compatible with pre-trained SD components, such as ControlNet and IP-Adapter, requiring no adaptation efforts. 
+          </p>
+        </div>
+      </div>
+    </div>
+    <!--/ Abstract. -->
+</section>
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+
+    <!-- Animation. -->
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Methods</h2>
+          <p>
+            We replace original self-attention layers in Stable Diffusion with the proposed LinFusion modules containing generalized linear attention. 
+            As shown in the left figure, knowledge distillation is applied to match their outputs with original self-attention layers. 
+            Only these modules are trainable, while other parameters are frozen. 
+          </p>
+          <img src="./static/images/method.pdf"/>
+          <p>
+            The proposed generalized linear attention can be viewed as a <i>normalization-aware</i> and <i>non-causal</i> version of <i>Mamba2</i>. 
+            For the right figure: (a) The architecture of Mamba2. Bi-directional SSM is additionally involved here. (b) Mamba2 without gating and RMS-Norm. (c) Normalization-aware Mamba2. (d) The proposed LinFusion module with generalized linear attention. 
+          </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="section">
+  
+  <div class="container is-max-desktop">
+
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Results</h2>
+      </div>
+    </div>
+
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h3 class="title is-4">Efficiency Comparisons</h3>
+          <img src="./static/images/efficiency.pdf"/>
+        <p>
+          (a) and (b): Comparisons of the proposed LinFusion with original SD-v1.5 under various resolutions in terms of generation speed using 8 steps and GPU memory consumption. The dashed lines denote estimated values using quadratic functions due to out-of-memory error. (c) and (d): Efficiency comparisons on various architectures under their default resolutions.
+        </p>
+      </div>
+    </div>
+
+    <div class="columns is-centered">
+      
+        <div class="column">
+          <div class="content">
+            <h3 class="title is-4">SD-v1.5</h3>
+            <img src="./static/images/sd.pdf"/>
+          </div>
+        </div>
+  
+        <div class="column">
+          <h3 class="title is-4">Generalized to LCM</h3>
+          <div class="columns is-centered">
+            <div class="column content">
+              <img src="./static/images/lcm.pdf"/>
+            </div>
+  
+          </div>
+        </div>
+    </div>
+
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h3 class="title is-4">Generalized to ControlNet</h3>
+        <div class="content has-text-justified">
+          <img src="./static/images/controlnet.pdf"/>
+        </div>
+      </div>
+    </div>
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h3 class="title is-4">Generalized to IP-Adapter</h3>
+        <div class="content has-text-justified">
+          <img src="./static/images/ip_adapter.pdf"/>
+        </div>
+      </div>
+    </div>
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h3 class="title is-4">Generalized to DreamShaper-8, Fine-Tuned SD</h3>
+        <div class="content has-text-justified">
+          <img src="./static/images/spring.pdf"/>
+        </div>
+      </div>
+    </div>
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <div class="content has-text-justified">
+          <img src="./static/images/summer.pdf"/>
+        </div>
+      </div>
+    </div>
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <div class="content has-text-justified">
+          <img src="./static/images/autumn.pdf"/>
+        </div>
+      </div>
+    </div>
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <div class="content has-text-justified">
+          <img src="./static/images/winter.pdf"/>
+        </div>
+      </div>
+    </div>
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h3 class="title is-4">SD-v2.1</h3>
+        <div class="content has-text-justified">
+          <img src="./static/images/sd2.pdf"/>
+        </div>
+      </div>
+    </div>
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h3 class="title is-4">SD-XL</h3>
+        <div class="content has-text-justified">
+          <img src="./static/images/xl.pdf"/>
+        </div>
+      </div>
+    </div>
+    <!--/ Animation. -->
+  </div>
+</section>
+
+
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <pre><code>@article{liu2024linfusion,
+  title     = {LinFusion: 1 GPU, 1 Minute, 16K Image},
+  author    = {Liu, Songhua and Yu, Weihao and Tan, Zhenxiong and Wang, Xinchao},
+  year      = {2024},
+  eprint    = {2409.xxxxx},
+  archivePrefix={arXiv},
+  primaryClass={cs.CV}
+}</code></pre>
+  </div>
+</section>
+
+
+<footer class="footer">
+  <div class="container">
+    <div class="content has-text-centered">
+      <a class="icon-link"
+         href="https://arxiv.org/pdf/2409.xxxxx">
+        <i class="fas fa-file-pdf"></i>
+      </a>
+      <a class="icon-link" href="https://github.com/Huage001/LinFusion" class="external-link" disabled>
+        <i class="fab fa-github"></i>
+      </a>
+    </div>
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            This webpage template is from  <a
+              href="https://github.com/nerfies/nerfies.github.io">Nerfies</a>. 
+            We sincerely thank <a
+            href="https://github.com/keunhong">Keunhong Park</a> for developing and open-sourcing this template.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
