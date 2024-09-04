@@ -151,7 +151,7 @@
             Modern diffusion models, particularly those utilizing a Transformer-based UNet for denoising, rely heavily on self-attention operations to manage complex spatial relationships, thus achieving impressive generation performance. 
 However, this existing paradigm faces significant challenges in generating high-resolution visual content due to its quadratic time and memory complexity with respect to the number of spatial tokens. 
 To address this limitation, we aim at a novel linear attention mechanism as an alternative in this paper. 
-Specifically, we begin our exploration from recently introduced models with linear complexity, \textit{e.g.}, Mamba, Mamba2, and Gated Linear Attention, and identify two key features—attention normalization and non-causal inference—that enhance high-resolution visual generation performance. 
+Specifically, we begin our exploration from recently introduced models with linear complexity, e.g., Mamba, Mamba2, and Gated Linear Attention, and identify two key features—attention normalization and non-causal inference—that enhance high-resolution visual generation performance. 
 Building on these insights, we introduce a generalized linear attention paradigm, which serves as a low-rank approximation of a wide spectrum of popular linear token mixers. 
 To save the training cost and better leverage pre-trained models, we initialize our models and distill the knowledge from pre-trained StableDiffusion (SD). 
 We find that the distilled model, termed LinFusion, achieves performance on par with or superior to the original SD after only modest training, while significantly reducing time and memory complexity. 
@@ -277,7 +277,7 @@ Moreover, it is highly compatible with pre-trained SD components, such as Contro
       <div class="column is-full-width">
         <h3 class="title is-4">SD-v2.1</h3>
         <div class="content has-text-justified">
-          <img src="./static/images/sd2.png"/>
+          <img src="./static/images/sd_2.png"/>
         </div>
       </div>
     </div>
